@@ -1,3 +1,15 @@
+import MenuItem from "./entities/menu-item.entity";
+
+interface MenuItemData {
+    id: number;
+    name: string;
+    url: string;
+    parentId?: number;
+    createdAt: string;
+    children: MenuItemData[];
+}
+
+
 export class MenuItemsService {
 
   /* TODO: complete getMenuItems so that it returns a nested menu structure
@@ -76,6 +88,24 @@ export class MenuItemsService {
   */
 
   async getMenuItems() {
-    throw new Error('TODO in task 3');
+    const result = await MenuItem.findAll();
+    const menuItems: MenuItemData[] = [];
+    const menuItemById: any = result.reduce((result: any, item) => {
+        const data: any = item.toJSON();
+        menuItems.push(data);
+        result[data.id] = {...data, children: []};
+        return result;
+    }, {});
+
+    const menuTree: any = [];
+    menuItems.forEach(item => {
+        if (item.parentId) {
+            menuItemById[item.parentId].children.push(menuItemById[item.id])
+        }
+        else {
+            menuTree.push(menuItemById[item.id])
+        }
+    });
+    return menuTree;
   }
 }
