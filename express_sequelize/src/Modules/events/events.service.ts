@@ -1,7 +1,7 @@
 import Event from './entities/event.entity';
 import Server from "../../server";
 import Workshop from './entities/workshop.entity';
-
+import { Op } from 'sequelize';
 
 export class EventsService {
 
@@ -160,6 +160,6 @@ export class EventsService {
     ```
      */
   async getFutureEventWithWorkshops() {
-    throw new Error('TODO task 2');
+    return await Event.findAll({include: { model:Workshop, required:true,  where: {start: {[Op.gt]: new Date() }} }});
   }
 }
