@@ -1,8 +1,13 @@
 import Event from './entities/event.entity';
+import Server from "../../server";
+import Workshop from './entities/workshop.entity';
 
 
 export class EventsService {
 
+  db() {
+    return Server.getApp().getDataSource();
+  }
   async getWarmupEvents() {
     return await Event.findAll();
   }
@@ -85,7 +90,7 @@ export class EventsService {
      */
 
   async getEventsWithWorkshops() {
-    throw new Error('TODO task 1');
+    return await Event.findAll({include: { model:Workshop, required:true }});
   }
 
   /* TODO: complete getFutureEventWithWorkshops so that it returns events with workshops, that have not yet started
